@@ -8,6 +8,7 @@ public class Main{
             { "・", "・", "・", "・", "・" }, { "・", "・", "・", "・", "・" }, { "・", "・", "・", "・", "・" } };
 
     static boolean victory = false;
+    static boolean bordCheck = false;
 
     static String[] victoryBord = { "○", "○", "○", "○", "○" };
   
@@ -64,27 +65,41 @@ public class Main{
             }
         }
     }
-    public static void main(String[]args){
-        bordOut();
-        while(victory == false){
+
+    public static void player(){
+        Scanner scanYoko = new Scanner(System.in);
+        Scanner scanTate = new Scanner(System.in);
+        bordCheck = false;
+        while (bordCheck == false){
             System.out.println("行数を入力してください");
-            Scanner scanYoko = new Scanner(System.in);
+            
             int yoko = scanYoko.nextInt();
             System.out.println("列数を入力してください");
-            Scanner scanTate = new Scanner(System.in);
+            
             int tate = scanTate.nextInt();
-            masterBord[yoko-1][tate-1] = "○";
-            bordOut();
-            judge();
-            if (victory == true){
-                scanYoko.close();
-                scanTate.close();
+            if (masterBord[yoko - 1][tate - 1] == "・" ) {
+                masterBord[yoko-1][tate-1] ="○";
+                bordCheck = true;
             }
+            else{
+                System.out.println("そこには他の駒が置いておあります。");
+                System.out.println("他の場所を選択してください。");
+            }  
+        } 
+        if (victory == true){
+            scanYoko.close();
+            scanTate.close();     
         }
     }
-    /*
-	public Object getGreeting() {
-		return null;
+    public static void main(String[]args){
+        bordOut();
+
+        while(victory == false){
+            player();
+            bordOut();
+            judge(); 
+        }  
+        System.out.println("ゲームを終了します。");
+    
     }
-    */
 }
