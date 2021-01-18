@@ -13,8 +13,10 @@ public class Main{
     static boolean bordCheck = false;
     static boolean enemyBordCheck = false;
     static boolean isVictory = false;
+    static boolean isDefeat= false;
+    //static String[] defeatBord = { "○", "○", "○", "○", "○" };
 
-    static String[] victoryBord = { "○", "○", "○", "○", "○" };
+    //static String[] victoryBord = { "●", "●", "●", "●", "●" };
   
     public static void bordOut() {
         for (int i = 0; i < 5; i++) {
@@ -71,7 +73,56 @@ public class Main{
                 isGameEnd = true;
                 isVictory = true;
             }
+        }  
+    }
+
+    public static void enemyJudge(){
+        int eCountYoko = 0;
+        int eCountTate = 0;
+        int eCountNaname1 = 0;
+        int eCountNaname2 = 0;
+        for (int i = 0; i < 5; i++) {
+            for (int e = 0; e<5; e++){
+                if (masterBord[i][e] == "●" ) {
+                    eCountYoko += 1;
+                }
+                if (eCountYoko == 5){
+                    isGameEnd = true;
+                    isDefeat = true;
+                }
+            }
+            eCountYoko = 0;
         }
+        for (int i = 0; i<5; i++){
+            for (int e = 0; e<5; e++){
+                if (masterBord[e][i] == "●" ) {
+                    eCountTate += 1;
+                }
+                if (eCountTate == 5){
+                    isGameEnd = true;
+                    isDefeat = true;
+                }
+            }
+            eCountTate = 0;
+        }
+        for (int i = 0; i<5; i++){
+            if (masterBord[i][i] == "●"){
+                eCountNaname1 += 1;
+            }
+            if (eCountNaname1 == 5){
+                isGameEnd = true;
+                isDefeat = true;
+            }
+        }
+        for(int i=0,e=4; i<5; i++,e--){
+            if (masterBord[i][e] == "●"){
+                eCountNaname2 += 1;
+            }
+            if (eCountNaname2 == 5){
+                isGameEnd = true;
+                isDefeat = true;
+            }
+        }  
     }
 
     public static void player(){
@@ -102,17 +153,33 @@ public class Main{
     }
     public static void enemy(){
         enemyBordCheck = false;
-        while(enemyBordCheck == false){
-            Random enemy = new Random();
-            int enemyHandA = enemy.nextInt(5);
-            int enemyHandB = enemy.nextInt(5);
-            if (masterBord[enemyHandA][enemyHandB]== "・"){
-                masterBord[enemyHandA][enemyHandB] = "●";
-                enemyBordCheck = true;
+        if (isDefeat == false){
+            while(enemyBordCheck == false){
+                Random enemy = new Random();
+                int enemyHandA = enemy.nextInt(5);
+                int enemyHandB = enemy.nextInt(5);
+                if (masterBord[enemyHandA][enemyHandB]== "・"){
+                    masterBord[enemyHandA][enemyHandB] = "●";
+                    enemyBordCheck = true;
+                }
             }
         }
         System.out.println("敵のターン");
 
+    }
+    public static void fillDefeat(){
+        int fill = 0;
+            for (int i = 0; i<5; i++){
+                for(int e = 0; e<5; e++){
+                    if (masterBord[i][e] != "・"){
+                        fill += 1;
+                    }
+                    if (fill == 25){
+                        isGameEnd = true;
+                        isDefeat = true;
+                    }
+                }
+            }
     }
     public static void main(String[]args){
         bordOut();
@@ -120,9 +187,14 @@ public class Main{
         while(isGameEnd == false){
             player();
             bordOut();
-            enemy();
-            bordOut();
             judge(); 
+            fillDefeat();
+            enemy();
+            enemyJudge();
+            bordOut(); 
+        }
+        if(isDefeat == true){
+            System.out.println("あなたの敗北です。");
         }
         if(isVictory == true){
             System.out.println("あなたの勝利です。");
